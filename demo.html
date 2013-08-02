@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <title>Scenario.js Demo</title>
+        <style type="text/css">
+            
+            body{
+                margin: 0;
+                padding: 0;
+                text-align: center;
+                }
+            #toShow{
+                margin-top:20px;
+                max-width: 200px;
+              }
+            
+        </style>
+    </head>
+    <body>
+        
+        <div class="container">
+            
+            <p>Do you like the image?</p>
+            
+            <input type="button" id="finish" value="Yes">
+            <input type="button" onclick="window.location.reload()" value="No">
+            
+            <div><img id="toShow"></div>
+            
+        </div>
+        
+        
+        <script type="text/javascript">
+            
+            /*
+             * Misc Helper Functions
+             */
+            var $ = function(id){
+                return document.getElementById(id);
+            },
+            on = function(el, event, fn){
+                if (el.addEventListener){
+                    el.addEventListener(event,fn,false);
+                } else if (el.attachEvent) {
+                    el.attachEvent("on"+event, fn);
+                }
+            };
+            
+            /*
+             * MixPanel
+             */
+            (function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src=("https:"===e.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f);b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" ");for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
+
+            mixpanel.init("<MIXPANEL ID>");
+
+            
+        </script>
+        
+        <script type="text/javascript" src="scenario.js"></script>
+        <script type="text/javascript">
+        
+            var r = function(s,e){
+                return Math.floor(Math.random() * e) + s;
+            };
+            
+            window.onload = function(){
+                
+                var test = 
+                
+                new Scenario('Liked Images')
+                .test('PlaceKitten', function(){ $('toShow').src = 'http://placekitten.com/'+r(200,300)+'/'+r(200,300)+''; })
+                .test('PlaceSheen', function(){ $('toShow').src = 'http://placesheen.com/'+r(200,300)+'/'+r(200,300)+''; })
+                .test('Horror', function(){ $('toShow').src = 'http://www.bubblews.com/assets/images/news/1766278232_1366422715.gif'; })
+                .go();
+                
+                on( $('finish'), 'click', function(e){
+                    test.complete();
+                    window.location.reload();
+                });
+                
+            }
+            
+        </script>
+    </body>
+</html>
