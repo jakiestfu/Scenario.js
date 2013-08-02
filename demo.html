@@ -30,7 +30,7 @@
             
         </div>
         
-        
+        <script type="text/javascript" src="scenario.js"></script>
         <script type="text/javascript">
             
             /*
@@ -45,6 +45,9 @@
                 } else if (el.attachEvent) {
                     el.attachEvent("on"+event, fn);
                 }
+            },
+            r = function(s,e){
+                return Math.floor(Math.random() * e) + s;
             };
             
             /*
@@ -55,15 +58,9 @@
             mixpanel.init("<MIXPANEL ID>");
 
             
-        </script>
-        
-        <script type="text/javascript" src="scenario.js"></script>
-        <script type="text/javascript">
-        
-            var r = function(s,e){
-                return Math.floor(Math.random() * e) + s;
-            };
-            
+            /*
+             * Begin Tests
+             */
             window.onload = function(){
                 
                 var test = 
