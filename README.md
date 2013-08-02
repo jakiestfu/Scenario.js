@@ -60,6 +60,41 @@ Navigate to MixPanel and click Funnels. Create a funnel that includes the testNa
 
 <img src="http://i.imgur.com/CXZzolm.png">
 
+## Practical Examples
+
+```javascript
+var test = new Scenario( 'Homepage Signup Conversions' )
+           .test( 'Home V1' )
+           .test( 'Home V2' )
+           .go();
+
+signup.on('click', function(){
+    test.complete();
+});
+```
+
+This results in the body tag being appended with a css class like the following:
+
+```html
+<body class="home-v1">
+```
+
+Alternatively, you can handle your test differences with JavaScript:
+
+```javascript
+var test = new Scenario( 'Homepage Signup Conversions' )
+           .test( 'Home V1', function(){
+               // Do something optional
+           })
+           .test( 'Home V2', function(){
+               // Do something optional
+           })
+           .go();
+
+signup.on('click', function(){
+    test.complete();
+});
+```
 
 ## Licensing
 MIT
