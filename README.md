@@ -24,11 +24,10 @@ test.complete();
 
 ## API
 
-* `Scenario( String testName )`: Initializes a new test and returns two functions, `test`, and `go`.
-* `test( String name[, function fn] )`: Adds a test variant. `name` is the name of the variant, and an optional function may be passed in the second parameter that will execute if the test case is chosen. In addition, the `body` has the test cases name added to it in the form of a slug, so `"Test Case A"` will be added to the body as `"test-case-a"`
-* `go()`: Rolls the dice and calls one of the variants. Returns the instance based method(s) `complete`.
-* ================================================
-* `complete()`: Finishes the test sequence.
+* <b>`Scenario( String testName )`</b>: Initializes a new test and returns two functions, `test`, and `go`.
+* <b>`test( String name[, function fn] )`</b>: Adds a test variant. `name` is the name of the variant, and an optional function may be passed in the second parameter that will execute if the test case is chosen. In addition, the `body` has the test cases name added to it in the form of a slug, so `"Test Case A"` will be added to the body as `"test-case-a"`
+* <b>`go()`</b>: Rolls the dice and calls one of the variants. Returns the instance based method(s) `complete`.
+* <b>`complete()`</b>: Finishes the test sequence.
 
 ## MixPanel Integration
 MixPanel is required with Scenario.
