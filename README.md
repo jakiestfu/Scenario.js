@@ -3,6 +3,7 @@ Scenario
 
 A lightweight A/B Testing library for use with MixPanel
 
+<a href="http://slid.es/jacobkelley/scenario-js" target="_blank">View Slide</a>
 
 ## Install
 
@@ -35,14 +36,14 @@ MixPanel is required with Scenario.
 Once the `go()` function has been called, the initial tracking event occurs:
 
 ```javascript
-mixpanel.track( "My Test Name Load" );
+mixpanel.track( "My Test Name Start" );
 ```
 
 Shortly after a test is chosen, another tracking event occurs. This one records the test case used:
 
 ```javascript
-mixpanel.track("My Test Name", {
-    variant: "Test A"
+mixpanel.track("My Test Name Mid", {
+    test: "Test A"
 });
 ```
 
