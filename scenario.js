@@ -12,11 +12,11 @@
             },
             tests = {},
             utils = {
-                track: function(name, props){
+                track: function(name, props, fn){
                     if( typeof props !== "undefined" ){
-                        mixpanel.track( name, props );
+                        mixpanel.track( name, props, fn );
                     } else {
-                        mixpanel.track( name );
+                        mixpanel.track( name, false, fn );
                     }
                 },
                 toSlug: function (s) {
@@ -51,8 +51,8 @@
                         });
                     }
                     
-                    this.complete = function(){
-                        utils.track(testName+" Finish");
+                    this.complete = function(fn){
+                        utils.track(testName+" Finish", null, fn);
                     };
                     return this;
                 }
