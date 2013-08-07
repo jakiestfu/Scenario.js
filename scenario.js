@@ -4,7 +4,7 @@
 
     var Namespace = "Scenario",
 
-        TestEngine = TestEngine || function (testName) {
+        Tester = Tester || function (testName) {
 
             var 
             cache = {
@@ -19,8 +19,8 @@
                         mixpanel.track( name );
                     }
                 },
-                toSlug: function (v) {
-                    return v.toLowerCase().replace(/-+/g, '').replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+                toSlug: function (s) {
+                    return s.toLowerCase().replace(/-+/g, "").replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
                 }
             },
             Public = {
@@ -33,8 +33,6 @@
                 },
                 go: function() {
                     
-                    utils.track(testName+' Load');
-                    
                     var test = tests[testName][Math.floor(Math.random() * tests[testName].length)],
                         slug = utils.toSlug(test.name);
 
@@ -42,8 +40,8 @@
 
                     cache.ranTests[testName] = test.name;
                     
-                    utils.track(testName, {
-                        variant: test.name
+                    utils.track(testName+" Mid", {
+                        test: test.name
                     });
                     
                     if (typeof test.fn === "function") {
@@ -54,7 +52,7 @@
                     }
                     
                     this.complete = function(){
-                        utils.track(testName+' Finish');
+                        utils.track(testName+" Finish");
                     };
                     return this;
                 }
@@ -62,9 +60,11 @@
 
             tests[testName] = tests[testName] || [];
             
+            utils.track(testName+" Start");
+            
             return Public;
         };
 
-    this[Namespace] = TestEngine;
+    this[Namespace] = Tester;
     
 }).call(this, window, document);
