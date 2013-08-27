@@ -8,11 +8,14 @@
 
             var 
             cache = {
-                ranTests: {}
+                ranTests: {},
+                weights: {},
+                totalWeights: 0
             },
             tests = {},
             utils = {
                 track: function(name, props, fn){
+
                     if( typeof props !== "undefined" ){
                         mixpanel.track( name, props, fn );
                     } else {
@@ -21,38 +24,77 @@
                 },
                 toSlug: function (s) {
                     return s.toLowerCase().replace(/-+/g, "").replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+                },
+                sortArgs: function(args){
+                    var toReturn = {
+                        weight: 1
+                    },
+                    i;
+                    for(i in args){
+                        switch( typeof args[i] ){
+                            case "string":
+                                toReturn.testName = args[i];
+                                break;
+                            case "function":
+                                toReturn.fn = args[i];
+                                break;
+                            case "number":
+                                toReturn.weight = args[i];
+                                break;
+                        }
+                    }
+                    return toReturn;
+                },
+                chooseWeightedItem: function(){
+                    var toChoose = [],
+                        i;
+                    for(i in cache.weights){
+                        var _weight = cache.weights[i];
+                        while(_weight--){
+                            toChoose.push(parseInt(i));
+                        }
+                    }
+                    return toChoose[Math.floor(Math.random() * toChoose.length)];
                 }
             },
             Public = {
-                test: function (name, fn) {
+                test: function () {
+                    var args = utils.sortArgs( arguments ),
+                        index = tests[testName].length;
                     tests[testName].push({
-                        name: name,
-                        fn: fn
+                        name: args.testName,
+                        fn: args.fn,
+                        weight: args.weight
                     });
+                    cache.weights[index] = args.weight;
+                    cache.totalWeights += args.weight;
                     return this;
                 },
                 go: function() {
                     
-                    var test = tests[testName][Math.floor(Math.random() * tests[testName].length)],
+                    var testIndex = utils.chooseWeightedItem(),
+                        test = tests[testName][testIndex],
                         slug = utils.toSlug(test.name);
 
                     d.body.className += " "+slug;
 
                     cache.ranTests[testName] = test.name;
                     
-                    utils.track(testName+" Mid", {
+                    utils.track(testName+" Start", {
                         test: test.name
                     });
                     
                     if (typeof test.fn === "function") {
                         test.fn.call(null, {
                             name: test.name,
-                            slug: slug
+                            slug: slug,
+                            weight: test.weight+'/'+cache.totalWeights,
+                            odds: Math.floor( (test.weight/cache.totalWeights) * 100)
                         });
                     }
-                    
+
                     this.complete = function(fn){
-                        utils.track(testName+" Finish", null, fn);
+                        return utils.track(testName+" Finish", null, fn);
                     };
                     return this;
                 }
@@ -60,11 +102,9 @@
 
             tests[testName] = tests[testName] || [];
             
-            utils.track(testName+" Start");
-            
             return Public;
         };
 
     this[Namespace] = Tester;
-    
+
 }).call(this, window, document);
