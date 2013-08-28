@@ -1,0 +1,15 @@
+{
+  "name": "Scenario.js",
+  "description": "A lightweight A/B Testing library for use with MixPanel",
+  "version": "1.0.0",
+  "author": "Jacob Kelley <jacob.kelley@makerstudios.com>",
+  "keywords": [
+    "test",
+    "ab",
+    "simple",
+    "testing"
+  ],
+  "license": "MIT",
+  "main": "scenario.js",
+  "scripts": ["scenario.js"]
+}
