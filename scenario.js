@@ -10,12 +10,15 @@
             cache = {
                 ranTests: {},
                 weights: {},
-                totalWeights: 0
+                totalWeights: 0,
+                doTrack: true
             },
             tests = {},
             utils = {
                 track: function(name, props, fn){
-
+                    if(cache.doTrack === false){
+                        return;
+                    }
                     if( typeof props !== "undefined" ){
                         mixpanel.track( name, props, fn );
                     } else {
@@ -58,7 +61,8 @@
                 }
             },
             Public = {
-                test: function () {
+                test: function (doTrack) {
+                    cache.doTrack = doTrack === false ? false : true;
                     var args = utils.sortArgs( arguments ),
                         index = tests[testName].length;
                     tests[testName].push({
