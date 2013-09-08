@@ -85,7 +85,7 @@
                     cache.ranTests[testName] = test.name;
                     
                     utils.track(testName+" Start", {
-                        test: test.name
+                        Tests: test.name
                     });
                     
                     if (typeof test.fn === "function") {
