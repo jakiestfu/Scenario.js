@@ -1,3 +1,13 @@
+/*
+ * Scenario.js
+ *
+ * Copyright 2013, Maker Studios - http://makerstudios.com/
+ * Released under the MIT Licence
+ * http://opensource.org/licenses/MIT
+ *
+ * Github:  https://github.com/MakerStudios/Scenario.js/
+ * Version: 1.0.0
+ */
 (function (w, d) {
 
     "use strict";
