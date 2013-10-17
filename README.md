@@ -3,7 +3,7 @@ Scenario.js
 
 A lightweight A/B Testing library for use with MixPanel
 
-<a href="http://slid.es/jacobkelley/scenario-js" target="_blank">View Slide</a>
+<a href="http://makerstudios.github.io/Scenario.js/" target="_blank">View Website</a>
 
 ## Install
 
