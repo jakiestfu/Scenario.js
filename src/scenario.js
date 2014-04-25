@@ -1,44 +1,29 @@
-/*
- * Scenario.js
- *
- * Copyright 2013, Maker Studios - http://makerstudios.com/
- * Released under the MIT Licence
- * http://opensource.org/licenses/MIT
- *
- * Github:  https://github.com/MakerStudios/Scenario.js/
- * Version: 1.0.0
- */
 (function (w, d) {
 
     "use strict";
 
     var Namespace = "Scenario";
 
-    var Tester = Tester || function (testName) {
+    var Tester = Tester || function (scenarioOpts) {
 
         var self = this;
-
-        var cache;
-        var tests;
         var utils;
-        var Public;
 
         /**
          * Keeps track of internal data
          * @type {Object}
          */
-        cache = {
+        self.cache = {
             ranTests: {},
             weights: {},
-            totalWeights: 0,
-            doTrack: true
+            totalWeights: 0
         };
 
         /**
          * A hash of tests to run
          * @type {Object}
          */
-        tests = {};
+        self.tests = {};
 
         /**
          * Helper functions
@@ -47,9 +32,6 @@
         utils = {
 
             track: function(name, props, fn){
-                if(cache.doTrack === false){
-                    return;
-                }
                 if( typeof props !== "undefined" ){
                     mixpanel.track( name, props, fn );
                 } else {
@@ -59,31 +41,11 @@
             toSlug: function (s) {
                 return s.toLowerCase().replace(/-+/g, "").replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
             },
-            sortArgs: function(args){
-                var toReturn = {
-                    weight: 1
-                },
-                i;
-                for(i in args){
-                    switch( typeof args[i] ){
-                        case "string":
-                            toReturn.testName = args[i];
-                            break;
-                        case "function":
-                            toReturn.fn = args[i];
-                            break;
-                        case "number":
-                            toReturn.weight = args[i];
-                            break;
-                    }
-                }
-                return toReturn;
-            },
             chooseWeightedItem: function(){
                 var toChoose = [],
                     i;
-                for(i in cache.weights){
-                    var _weight = cache.weights[i];
+                for(i in self.cache.weights){
+                    var _weight = self.cache.weights[i];
                     while(_weight--){
                         toChoose.push(parseInt(i));
                     }
@@ -93,53 +55,53 @@
         };
 
 
-        Public = {
-            test: function (doTrack) {
-                cache.doTrack = doTrack === false ? false : true;
-                var args = utils.sortArgs( arguments ),
-                    index = tests[testName].length;
-                tests[testName].push({
-                    name: args.testName,
-                    fn: args.fn,
-                    weight: args.weight
-                });
-                cache.weights[index] = args.weight;
-                cache.totalWeights += args.weight;
-                return self;
-            },
-            go: function() {
+        self.test = function (opts) {
 
-                var testIndex = utils.chooseWeightedItem(),
-                    test = tests[testName][testIndex],
-                    slug = utils.toSlug(test.name);
+            opts.weight = opts.weight || 1;
 
-                d.body.className += " "+slug;
+            var index = self.tests[scenarioOpts.name].length;
 
-                cache.ranTests[testName] = test.name;
+            self.tests[scenarioOpts.name].push({
+                name: opts.name,
+                callback: opts.callback,
+                weight: opts.weight,
+                className: opts.className || utils.toSlug(opts.name)
+            });
 
-                utils.track(testName+" Start", {
-                    Tests: test.name
-                });
+            self.cache.weights[index] = opts.weight;
+            self.cache.totalWeights += opts.weight;
 
-                if (typeof test.fn === "function") {
-                    test.fn.call(null, {
-                        name: test.name,
-                        slug: slug,
-                        weight: test.weight+'/'+cache.totalWeights,
-                        odds: Math.floor( (test.weight/cache.totalWeights) * 100)
-                    });
-                }
-
-                self.complete = function(fn){
-                    return utils.track(testName+" Finish", null, fn);
-                };
-                return self;
-            }
+            return this;
         };
 
-        tests[testName] = tests[testName] || [];
+        self.go = function() {
 
-        return Public;
+            var chosenTestIndex = utils.chooseWeightedItem();
+            var test = self.tests[scenarioOpts.name][chosenTestIndex];
+
+            d.body.className += " "+test.className;
+
+            self.cache.ranTests[scenarioOpts.name] = test.name;
+
+            utils.track(scenarioOpts.name+" Start", {
+                Tests: test.name
+            });
+            if (typeof test.callback === "function") {
+                test.callback.call(null, {
+                    name: test.name,
+                    slug: test.className,
+                    weight: test.weight+'/'+self.cache.totalWeights,
+                    odds: Math.floor( (test.weight/self.cache.totalWeights) * 100)
+                });
+            }
+            return this;
+        };
+
+        self.complete = function(fn){
+            return utils.track(scenarioOpts.name+" Finish", null, fn);
+        };
+
+        self.tests[scenarioOpts.name] = self.tests[scenarioOpts.name] || [];
     };
 
     // Assign to the global namespace

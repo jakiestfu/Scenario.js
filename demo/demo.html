@@ -31,22 +31,15 @@
 
         </div>
 
-        <script type="text/javascript" src="scenario.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script type="text/javascript" src="../dist/scenario.min.js"></script>
         <script type="text/javascript">
 
             /*
              * Misc Helper Functions
              */
-            var $ = function(id){
-                return document.getElementById(id);
-            },
-            on = function(el, event, fn){
-                if (el.addEventListener){
-                    el.addEventListener(event,fn,false);
-                } else if (el.attachEvent) {
-                    el.attachEvent("on"+event, fn);
-                }
-            },
+
+            var
             r = function(s,e){
                 return Math.floor(Math.random() * e) + s;
             },
@@ -61,35 +54,45 @@
 
             mixpanel.init("<MIXPANEL-ID>");
 
-            
+
             /*
              * Begin Tests
              */
-            window.onload = function(){
+            $(document).ready(function(){
+                var test =
 
-                var test = 
-
-                new Scenario('Liked Images V3')
-                .test('PlaceSheen', function(info){
-                    logWeight(info);
-                    $('toShow').src = 'http://placesheen.com/'+r(200,300)+'/'+r(200,300)+''; 
+                new Scenario({
+                    name: 'Liked Images V3',
+                    track: function(text, props, cb){
+                        return mixpanel.track(text, props, cb);
+                    }
                 })
-                .test('Horror', function(info){
-                    logWeight(info);
-                    $('toShow').src = 'http://www.bubblews.com/assets/images/news/1766278232_1366422715.gif'; 
+                .test({
+                    name: 'PlaceSheen',
+                    callback: function(info){
+                        logWeight(info);
+                        $('#toShow').attr('src', 'http://placesheen.com/'+r(200,300)+'/'+r(200,300) );
+                    }
+                })
+                .test({
+                    name: 'Horror',
+                    callback: function(info){
+                        logWeight(info);
+                        $('#toShow').attr('src', 'http://www.bubblews.com/assets/images/news/1766278232_1366422715.gif');
+                    }
                 })
                 .go();
 
-                on( $('finish'), 'click', function(e){
+               $('#finish').on('click', function(e){
                     test.complete(function(){
 
                         window.location.reload();
 
                     });
                 });
-                
-            }
-            
+
+            });
+
         </script>
     </body>
 </html>

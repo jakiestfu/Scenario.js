@@ -2,5 +2,5 @@
 	"name": "Scenario.js",
 	"author": "Maker Studios",
 	"version": "1.0.0",
-	"main": "dist/lingual.min.js"
+	"main": "dist/scenario.min.js"
 }
