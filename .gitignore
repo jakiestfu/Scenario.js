@@ -1,0 +1,4 @@
+node_modules/
+
+# We're going to commit dist files for now
+#dist
