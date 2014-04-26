@@ -15,10 +15,18 @@ A lightweight A/B Testing library for use with MixPanel
 ## Usage
 
 ```javascript
-var test = new Scenario('My Test Name')
-           .test('Test A')
-           .test('Test B')
-           .go();
+var test = new Scenario({
+  name: 'My Test Name',
+  weight: 1,
+  className: 'foobar' // An optional class to add to the body tag. If left empty, the test name will be turned into a slug (i.e. "home-v1")
+})
+.test({
+  name: 'Test A'
+})
+.test({
+  name: 'Test B'
+})
+.go();
 
 // At a later point
 test.complete();
@@ -41,10 +49,21 @@ Navigate to MixPanel and click Funnels. Create a funnel that includes the testNa
 ## Practical Examples
 
 ```javascript
-var test = new Scenario( 'Homepage Signup Conversions' )
-           .test( 'Home V1', 10 ) // Test weight is 10/15, or 66%
-           .test( 'Home V2', 5 ) // Test weight is 5/15, or 33%
-           .go();
+var test = new Scenario({
+  name: 'Homepage Signup Conversions',
+  tracker: function(text, props, cb){ // This is the default, you may omit it
+    return mixpanel.track(text, props, cb);
+  }
+})
+.test({
+  name: 'Home V1',
+  weight: 10 // Test weight is 10/15, or 66%
+ })
+.test({
+  name: 'Home V2',
+  weight: 5 // Test weight is 5/15, or 33%
+})
+.go();
 
 signup.on('click', function(){
     test.complete();
@@ -61,15 +80,21 @@ Alternatively, you can handle your test differences with JavaScript:
 
 ```javascript
 var test = new Scenario( 'Homepage Signup Conversions' )
-           .test( 'Home V1', function(info){
-               // Do something optional
-               // `info` contains information about the chosen test, including weights and odds
-           })
-           .test( 'Home V2', function(info){
-               // Do something optional
-               // `info` contains information about the chosen test, including weights and odds
-           })
-           .go();
+            .test({
+              name: 'Home V1',
+              callback: function(info){
+                // Do something optional
+                // `info` contains information about the chosen test, including weights and odds
+              }
+            })
+            .test({
+              name: 'Home V2',
+              callback: function(info){
+                // Do something optional
+                // `info` contains information about the chosen test, including weights and odds
+              }
+            })
+            .go();
 
 signup.on('click', function(){
     test.complete(fn);

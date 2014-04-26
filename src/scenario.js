@@ -6,6 +6,10 @@
 
     var Tester = Tester || function (scenarioOpts) {
 
+        scenarioOpts.track = scenarioOpts.track || function(text, props, cb){
+            return mixpanel.track(text, props, cb);
+        };
+
         var self = this;
         var utils;
 
@@ -31,13 +35,7 @@
          */
         utils = {
 
-            track: function(name, props, fn){
-                if( typeof props !== "undefined" ){
-                    mixpanel.track( name, props, fn );
-                } else {
-                    mixpanel.track( name, false, fn );
-                }
-            },
+            track: scenarioOpts.track,
             toSlug: function (s) {
                 return s.toLowerCase().replace(/-+/g, "").replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
             },

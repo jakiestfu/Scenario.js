@@ -62,10 +62,7 @@
                 var test =
 
                 new Scenario({
-                    name: 'Liked Images V3',
-                    track: function(text, props, cb){
-                        return mixpanel.track(text, props, cb);
-                    }
+                    name: 'Liked Images V3'
                 })
                 .test({
                     name: 'PlaceSheen',
@@ -85,9 +82,7 @@
 
                $('#finish').on('click', function(e){
                     test.complete(function(){
-
                         window.location.reload();
-
                     });
                 });
 
