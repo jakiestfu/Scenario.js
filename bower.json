@@ -1,6 +1,6 @@
 {
 	"name": "Scenario.js",
 	"author": "Maker Studios",
-	"version": "1.0.0",
+	"version": "1.2.0",
 	"main": "dist/scenario.min.js"
 }
