@@ -7,7 +7,9 @@
     var Tester = Tester || function (scenarioOpts) {
 
         scenarioOpts.track = scenarioOpts.track || function(text, props, cb){
-            return mixpanel.track(text, props, cb);
+            if( typeof mixpanel !== "undefined" ){
+                return mixpanel.track(text, props, cb);
+            }
         };
 
         var self = this;
