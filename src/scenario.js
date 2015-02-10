@@ -51,12 +51,21 @@
                     }
                 }
                 return toChoose[Math.floor(Math.random() * toChoose.length)];
+            },
+            checkVariant: function(name){
+                /* Check MP cookie for variant name, and return it */  
+                return mixpanel.get_property(name) ? mixpanel.get_property(name) : false;
+            },
+            setVariant: function(variant){
+                /* Set the current variant inside the Mixpanel Cookie */
+                var mpObj = {};
+                mpObj[scenarioOpts.name] = variant;
+                mixpanel.register(mpObj);
             }
         };
 
 
         self.test = function (opts) {
-
             opts.weight = opts.weight || 1;
 
             var index = self.tests[scenarioOpts.name].length;
@@ -75,10 +84,22 @@
         };
 
         self.go = function() {
+            /* If there's a test in the Mixpanel Cookie, keep the user inside that variant */
 
-            var chosenTestIndex = utils.chooseWeightedItem();
-            var test = self.tests[scenarioOpts.name][chosenTestIndex];
-
+            if (!utils.checkVariant(scenarioOpts.name)) {
+                var chosenTestIndex = utils.chooseWeightedItem();
+                var test = self.tests[scenarioOpts.name][chosenTestIndex];
+                utils.setVariant(test.name);
+            } else {
+                var test = utils.checkVariant(scenarioOpts.name);
+                /* This is to find the callback for the test */
+                var tests = self.tests[scenarioOpts.name];
+                for (var i = 0; i <  tests.length; i++) {
+                    if (tests[i].name == test.name) {
+                      test.callback = tests[i].callback; 
+                    }
+                }
+            }
             d.body.className += " "+test.className;
 
             self.cache.ranTests[scenarioOpts.name] = test.name;
