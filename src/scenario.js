@@ -51,12 +51,21 @@
                     }
                 }
                 return toChoose[Math.floor(Math.random() * toChoose.length)];
+            },
+            checkVariant: function(name){
+                /* Check MP cookie for variant name, and return it */
+                return mixpanel.get_property(name) ? mixpanel.get_property(name) : false;
+            },
+            setVariant: function(variant){
+                /* Set the current variant inside the Mixpanel Cookie */
+                var mpObj = {};
+                mpObj[scenarioOpts.name] = variant;
+                mixpanel.register(mpObj);
             }
         };
 
 
         self.test = function (opts) {
-
             opts.weight = opts.weight || 1;
 
             var index = self.tests[scenarioOpts.name].length;
@@ -75,9 +84,22 @@
         };
 
         self.go = function() {
+            var test, variantName;
 
-            var chosenTestIndex = utils.chooseWeightedItem();
-            var test = self.tests[scenarioOpts.name][chosenTestIndex];
+            /* If there's a test in the Mixpanel Cookie, keep the user inside that variant */
+            variantName = utils.checkVariant(scenarioOpts.name);
+
+            if (variantName) {
+                test = self.tests[scenarioOpts.name].find(function(_test) {
+                  return _test['name'] === variantName;
+                });
+            }
+
+            if (!test) {
+                var chosenTestIndex = utils.chooseWeightedItem();
+                test = self.tests[scenarioOpts.name][chosenTestIndex];
+                utils.setVariant(test.name);
+            }
 
             d.body.className += " "+test.className;
 
